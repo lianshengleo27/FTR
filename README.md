@@ -213,7 +213,7 @@ Options:
 > 入力例
 
 ```sh
-./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -a angle.txt -j "calculation"
+./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -a angle.json -j "calculation"
 ```
 
 > 結果（法角度を示す部分）
