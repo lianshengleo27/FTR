@@ -22,7 +22,9 @@ make
 <!-- <img src="https://logowik.com/content/uploads/images/visual-studio-code7642.jpg" alt="alt text" width="50" height="20"> -->
 
 
-![image](images/1.png)
+
+![1](https://user-images.githubusercontent.com/56211764/131423087-a1f5da4c-b6e8-4dc9-ace6-893afe2e4c92.png)
+
 
 
 ### 1.3. ファイルの実行
