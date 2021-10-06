@@ -4,7 +4,8 @@
 ### 1.1. シンボリックリンクの構築
 ---
 
-> 「`diffelev_sample`」 フォルダの `diffelev` と 「`shared_sample`」 フォルダへのリンク
+> In「`shared_sample`」 フォルダ
+> `diffelev` と 「`shared_object`」 フォルダへのリンクを構築
 
 ```bash
 ln -s ../shared_object diffelev
@@ -12,7 +13,7 @@ ln -s ../shared_object diffelev
 
 ### 1.2. ファイルのBuild
 ---
-> In 「`diffelev_sample`」 フォルダ, type:
+> In 「`shared_sample`」 フォルダ, type:
 ```
 make
 ```
