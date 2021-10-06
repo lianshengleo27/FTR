@@ -5,6 +5,7 @@
 ---
 
 > In「`shared_sample`」 フォルダ
+> 
 > `diffelev` と 「`shared_object`」 フォルダへのリンクを構築
 
 ```bash
