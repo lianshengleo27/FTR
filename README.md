@@ -41,12 +41,13 @@ make
 > 入力オプションの詳細を示す
 ```
 Options:
-  -p, --input-pcl       入力点群ファイルを指定します
+   -p, --input-pcl       入力点群ファイルを指定します
   -g, --thin-grid       入力点群をグリッド毎に間引きます 計算方法を指定します
                         "maximum":グリッドのZ座標が最大値の点を残します
                         "minimum":グリッドのZ座標が最小値の点を残します
                         "median":グリッドのZ座標が中央値となる点を残します
-                        "mode":グリッドのZ座標でヒストグラムを取った際の最瀕値となる点を残します
+                        "mode":グリッドのZ座標でヒストグラムを取った際の最瀕値となる点を残します 続けてヒストグラムの間隔を指定してください
+                        "none":間引きを行いません
   -c, --cut-polygon     多角形を指定し、点群データからその内側にある点のみを抽出して残りを消去します
                         最初に多角形の点の数を指定し、続けて1点目のX座標、1点目のY座標、2点目以降...と指定します
   -n, --extract-near    設計データから近い点のみを抽出して残りを消去します
@@ -75,21 +76,21 @@ Options:
 ---
 > グリッドの基準位置およびサイズの設定 (in m)
 
-```py
+```sh
 # 点群密度を変更するため、まずグリッドを設置する
 
 ./sample_diffelev -o <defalut: 0 0> -w <default: 1 1>
 ```
 
 > 入力点群ファイルの指定 `(-p)`
-```py
+```sh
 #　指定されるパスから点群ファイルを読込む
 
 ./sample_diffelev -p <path/to/point_cloud_file>
 ```
 
 > 設計データ(LandXML)ファイルの指定
-```py
+```sh
 #　指定されるパスから設計データを読込む
 
 ./sample_diffelev -x <path/to/design_data_file>
@@ -100,7 +101,7 @@ Options:
 ---
 
 > 範囲指定に応じた点群の切り出し
-```py
+```sh
 # 範囲を指定する多角形の頂点および各頂点の座標を入力する
 
 ./sample_diffelev -c <多角形の頂点の数> <1点目のX座標> <1点目のY座標> <2点目以降...>
@@ -108,14 +109,14 @@ Options:
 <!----------------------------------------------------------------------------->
 
 > 間引き方法の選択 & 出力先の指定
-```py
+```sh
 # 各グリッドにおいて点群密度を減らし、代表点のみを抽出する
 
 ./sample_diffelev -g <"maximum" | "minimum" | "median" | "mode"> -t <path/to/output_file>
 ```
 <!----------------------------------------------------------------------------->
 > 設計データから±x m範囲の点群抽出 (in m)
-```py
+```sh
 # 設計データから大いに離れる異常値を除外する
 
 ./sample_diffelev -n <default: 0.1>
@@ -123,20 +124,19 @@ Options:
 <!----------------------------------------------------------------------------->
 
 > *入力例*
-```py
+```sh
 # 点群ファイルdata_sample.txtと設計データdesign_data.xmlを読込み
 # 各グリッドにおいて「最大値」、そして設計データから±0.1m範囲の点群のみを抽出する
 # 出力先は、同じディレクトリの「output.csv」に保存する
 
 ./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -n 0.1 -t output.csv
 ```
-`+resulted figure`
 
 
 ### 2.3. 標高較差 & ヒートマップ用データの算出
 ---
 > 出力先およびファイルの形式を指定する
-```py
+```sh
 # 「標高較差」は.csv、「ヒートマップ用データ」は.JSONファイルにそれぞれ保存する
 ./sample_diffelev -d diffelev.csv heatmap_data.json 
 ```
@@ -145,27 +145,34 @@ Options:
 
 * 事前に「**std_value.json**」というファイルを用意する
 
+```sh
+./sample_diffelev -p data_sample.txt -u std_value.json
+
+# `-u` オプションの指定だけでは何も計算処理が行われません。
+# 他のオプションと組み合わせて使用する
+```
+
 \>> `std_value.json`:
 ```json
 {
-    "ignore_distance": 0.05,
-    "slope_average_threshold": 0.08,
-    "slope_discard_rate": 0.003,
-    "slope_maximum_threshold": 0.19,
-    "slope_minimum_num_in_m3": 1,
-    "slope_minimum_threshold": -0.19,
-    "top_average_threshold": 0.05,
-    "top_discard_rate": 0.003,
-    "top_maximum_threshold": 0.15,
-    "top_minimum_num_in_m3": 1,
-    "top_minimum_threshold": -0.15,
-    "top_slope_grad_threshold": 0.06
+    "ignore_distance": 0.05, //	法肩・法尻から±5cm以内に存在する計測点を除く
+    "slope_average_threshold": 0.08, //法面の較差値の平均値
+    "slope_discard_rate": 0.003, //法面の棄却点数の割合
+    "slope_maximum_threshold": 0.19, //法面の較差値の最大値
+    "slope_minimum_num_in_m2": 1, //法面の1m2 に対するデータ数
+    "slope_minimum_threshold": 0.19, //法面の較差値の最小値（絶対値で指定）
+    "top_average_threshold": 0.05, //天端の較差値の平均値
+    "top_discard_rate": 0.003, //天端の棄却点数の割合
+    "top_maximum_threshold": 0.15, //天端の較差値の最大値
+    "top_minimum_num_in_m2": 1, //天端の1m2 に対するデータ数
+    "top_minimum_threshold": 0.15, //天端の較差値の最小値（絶対値で指定）
+    "top_slope_grad_threshold": 0.06 //平場・法面を判断する基準（三角形の勾配＞0.06 → 法面とする）
 }
 ```
 
 
 > 入力例
-```py
+```sh
 # 規格値を指定する「std_value.json」ファイルをオプションとして入力
 
 ./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -d diffelev.csv heatmap_data.json -v std_value.json
@@ -173,16 +180,23 @@ Options:
 > 結果
 
 \>> `heatmap_data.json`:
+
 ```json
 {
     "area": 305.0, //グリッド点数×グリッド面積
-    "average": -4.245125128772781, //平均値：「評価用（間引き後）点群データ標高と設計値」の差の平均値（棄却点を除く）
+    "average": -4.245125128772781, //平均値：「評価用（間引き後）点群データ標高と設計値」の差の平均値
     "discard": 301, //規格値を外れたデータ個数
-    "maximum": 3.0552100422057435, //「評価用（間引き後）点群データ標高と設計値」の差の最大値（棄却点を除く）
-    "minimum": -21.354345055558667, //「評価用（間引き後）点群データ標高と設計値」の差の最小値（棄却点を除く）
+    "maximum": 3.0552100422057435, //「評価用（間引き後）点群データ標高と設計値」の差の最大値
+    "minimum": -21.354345055558667, //「評価用（間引き後）点群データ標高と設計値」の差の最小値
     "number": 305 //全評価用データ個数（棄却点を含む）
 }
+
 ```
+>> 棄却点数の割合 < 規格値:
+>>  最大値、最小値、平均値には棄却点を除いて算出された値が記載されます。
+>> 
+>> 棄却点数の割合 > 規格値:
+>>  最大値、最小値、平均値には棄却点を含めて算出された値が記載されます。
 
 \>> `diffelev.csv`:
 
@@ -246,7 +260,7 @@ Options:
                 0.0433438212066507,
                 0.7682212795296145
             ],
-            "outline": [　　//
+            "outline": [　　//設計データの三角形グループの外形線を出力します。
                 ]
             ],
             "type": "slope"　//平場または法面を示す
