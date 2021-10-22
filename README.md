@@ -4,21 +4,23 @@
 ### 1.1. シンボリックリンクの構築
 ---
 
-> In「`shared_sample`」 フォルダ
-> 
-> `diffelev` と 「`shared_object`」 フォルダへのリンクを構築
-
+- In`shared_sample` フォルダ
 ```bash
+# `diffelev` と `shared_object` フォルダへのリンクを構築
+
 ln -s ../shared_object diffelev
 ```
+- `diffelev` folder creared
+
+- Prepare `libxerces-c-3.2.so` Library and add to `diffelev` folder created
 
 ### 1.2. ファイルのBuild
 ---
-> In 「`shared_sample`」 フォルダ, type:
+- In `shared_sample` フォルダ, type:
 ```
 make
 ```
-> バイナリの実行ファイル `sample_diffelev` を生成する
+- バイナリの実行ファイル `sample_diffelev` を生成する
 
 <!-- ![image](https://logowik.com/content/uploads/images/visual-studio-code7642.jpg) -->
 <!-- <img src="https://logowik.com/content/uploads/images/visual-studio-code7642.jpg" alt="alt text" width="50" height="20"> -->
@@ -32,16 +34,16 @@ make
 ### 1.3. ファイルの実行
 ---
 
-> In current directory where .exe file locates, type:
+- In current directory where .exe file locates, type:
 
 ```
 ./sample_diffelev <--Option>
 ```
 
-> 入力オプションの詳細を示す
+- 入力オプションの詳細を示す
 ```
 Options:
-   -p, --input-pcl       入力点群ファイルを指定します
+  -p, --input-pcl       入力点群ファイルを指定します
   -g, --thin-grid       入力点群をグリッド毎に間引きます 計算方法を指定します
                         "maximum":グリッドのZ座標が最大値の点を残します
                         "minimum":グリッドのZ座標が最小値の点を残します
@@ -57,6 +59,7 @@ Options:
   -s, --separator       入力ファイルの区切り文字を設定します(初期値:',')
   -i, --ignore-lines    入力ファイルの先頭何行を無視するかを指定します(初期値:0)
   -x, --input-landxml   設計データとなるLandXmlファイルを指定します
+  -l, --output-stl      設計データから得られた表面形状を指定したファイルにSTL形式で出力します
   -d, --diff-elevation  較差を計算し、指定したファイルに計算結果を出力します
                         各グリッドの較差算出結果のcsvファイル、全体の評価結果のjsonファイルの順に指定します
   -v, --standard-value  較差の計算で使用する規格値等のパラメータが書かれたjsonファイルを指定します
@@ -172,10 +175,10 @@ Options:
 
 
 > 入力例
+- 規格値を指定する「std_value.json」ファイルをオプションとして入力
+- 点群ファイルのseparatorちゃんと確認、`space`の場合は　`-s " "`が必要となる
 ```sh
-# 規格値を指定する「std_value.json」ファイルをオプションとして入力
-
-./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -d diffelev.csv heatmap_data.json -v std_value.json
+./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -d diffelev.csv heatmap_data.json -v std_value.json -s " "
 ```
 > 結果
 
@@ -239,39 +242,83 @@ Options:
 
 ```json
 //法面
-    {
-        "approx": {
-            "angle": 40.3448904890261,
+           "approx": {
+            "angle": 33.32020836249262,
             "center": [
-                -67127.50521568627,
-                -69406.54109313722,
-                237.5474901960784
+                -66798.0972314638,
+                -69252.52936447694,
+                283.926281506519
             ],
             "normal": [
-                -0.6461908238414008,
-                0.03933833125129931,
-                0.7621613443868265
+                -0.05375152508800869,
+                -0.5466814172140991,
+                0.8356136676859093
+            ],
+            "outline": [    //どれの法面を判断できる
+                [
+                    -66805.0035541121,
+                    -69258.69259499566,
+                    279.4498719953511
+                ],
+                [
+                    -66791.6950596824,
+                    -69259.0847977335,
+                    280.04936185895457
+                ],
+                [
+                    -66791.6950596824,
+                    -69247.34066953028,
+                    287.73269316187833
+                ],
+                [
+                    -66805.0035541121,
+                    -69246.94846679244,
+                    287.1332032982748
+                ]
             ],
             "valid": "yes"
         },
         "design": {
             "normal": [
-                -0.6387154130292206,
-                0.0433438212066507,
-                0.7682212795296145
+                -0.04730468731800854,
+                -0.5526830910767048,
+                0.8320478756632002
             ],
-            "outline": [　　//設計データの三角形グループの外形線を出力します。
+            "outline": [     //設計データの三角形グループの外形線を出力します。
+                [
+                    [
+                        -67283.77392894664,
+                        -69220.1922640378,
+                        278.219000000017
+                    ],
+                    
+                    [
+                         ....
+                    ],
+                    
+                    [
+                        -67282.35887399194,
+                        -69199.19789852048,
+                        292.247000000017
+                    ]
                 ]
             ],
-            "type": "slope"　//平場または法面を示す
+            "type": "slope" //平場または法面を示す
+            ],
         }
     },
 ```
 
+### 2.5. STLの出力オプション
+```sh
+./sample_diffelev -p ixs_data_eval.txt -x ixs_design.xml -l output.stl
+```
+> -xと-lだけではSTLの出力ができないため、まず他に何かのオプションを入力必要
 
 
-
-
-
-
-
+### 2.6. E57 fileの読込み機能を追加
+>　.txt点群ファイルと同じ扱い
+>　
+```sh
+./sample_diffelev -p ixs_data_eval.e57 -x ixs_design.xml -d diffelev.csv heatmap.json -a angle.json -g maximum
+```
