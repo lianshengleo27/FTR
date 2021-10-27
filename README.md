@@ -37,7 +37,7 @@ make
 - In current directory where .exe file locates, type:
 
 ```
-./sample_diffelev <--Option>
+./sample_diffelev
 ```
 
 - 入力オプションの詳細を示す
@@ -100,7 +100,7 @@ Options:
 ```
 
 
-### 2.2. 評価用点群の生成
+### 2.2. 評価用点群の抽出
 ---
 
 > 範囲指定に応じた点群の切り出し
@@ -115,7 +115,7 @@ Options:
 ```sh
 # 各グリッドにおいて点群密度を減らし、代表点のみを抽出する
 
-./sample_diffelev -g <"maximum" | "minimum" | "median" | "mode"> -t <path/to/output_file>
+./sample_diffelev -g {"maximum" | "minimum" | "median" | "mode"} -t <path/to/output_file>
 ```
 <!----------------------------------------------------------------------------->
 > 設計データから±x m範囲の点群抽出 (in m)
@@ -129,24 +129,26 @@ Options:
 > *入力例*
 ```sh
 # 点群ファイルdata_sample.txtと設計データdesign_data.xmlを読込み
-# 各グリッドにおいて「最大値」、そして設計データから±0.1m範囲の点群のみを抽出する
+# 各グリッドにおいて「maximum」、そして設計データから±0.1m範囲の点群のみを抽出する
 # 出力先は、同じディレクトリの「output.csv」に保存する
 
 ./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -n 0.1 -t output.csv
 ```
 
+*+図*
 
 ### 2.3. 標高較差 & ヒートマップ用データの算出
 ---
 > 出力先およびファイルの形式を指定する
 ```sh
-# 「標高較差」は.csv、「ヒートマップ用データ」は.JSONファイルにそれぞれ保存する
+# 標高較差 `diffelev.csv`、ヒートマップ用データは `heatmap_data.json` にそれぞれ保存する
 ./sample_diffelev -d diffelev.csv heatmap_data.json 
 ```
 
 > 規格値の指定
 
-* 事前に「**std_value.json**」というファイルを用意する
+* 事前に `std_value.json` というファイルを用意する
+* 中身の数値を変更することによって、規格値を指定できる
 
 ```sh
 ./sample_diffelev -p data_sample.txt -u std_value.json
@@ -158,18 +160,18 @@ Options:
 \>> `std_value.json`:
 ```json
 {
-    "ignore_distance": 0.05, //	法肩・法尻から±5cm以内に存在する計測点を除く
-    "slope_average_threshold": 0.08, //法面の較差値の平均値
-    "slope_discard_rate": 0.003, //法面の棄却点数の割合
-    "slope_maximum_threshold": 0.19, //法面の較差値の最大値
-    "slope_minimum_num_in_m2": 1, //法面の1m2 に対するデータ数
-    "slope_minimum_threshold": 0.19, //法面の較差値の最小値（絶対値で指定）
-    "top_average_threshold": 0.05, //天端の較差値の平均値
-    "top_discard_rate": 0.003, //天端の棄却点数の割合
-    "top_maximum_threshold": 0.15, //天端の較差値の最大値
-    "top_minimum_num_in_m2": 1, //天端の1m2 に対するデータ数
-    "top_minimum_threshold": 0.15, //天端の較差値の最小値（絶対値で指定）
-    "top_slope_grad_threshold": 0.06 //平場・法面を判断する基準（三角形の勾配＞0.06 → 法面とする）
+    "ignore_distance": 0.05, #法肩・法尻から±5cm以内に存在する計測点を除く
+    "slope_average_threshold": 0.08, #法面の較差値の平均値
+    "slope_discard_rate": 0.003, #法面の棄却点数の割合
+    "slope_maximum_threshold": 0.19, #法面の較差値の最大値
+    "slope_minimum_num_in_m2": 1, #法面の1m2 に対するデータ数
+    "slope_minimum_threshold": 0.19, #法面の較差値の最小値（絶対値で指定）
+    "top_average_threshold": 0.05, #天端の較差値の平均値
+    "top_discard_rate": 0.003, #天端の棄却点数の割合
+    "top_maximum_threshold": 0.15, #天端の較差値の最大値
+    "top_minimum_num_in_m2": 1, #天端の1m2 に対するデータ数
+    "top_minimum_threshold": 0.15, #天端の較差値の最小値（絶対値で指定）
+    "top_slope_grad_threshold": 0.06 #平場・法面を判断する基準（三角形の勾配＞0.06 → 法面とする）
 }
 ```
 
