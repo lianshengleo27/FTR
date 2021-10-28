@@ -79,21 +79,21 @@ Options:
 ---
 > グリッドの基準位置およびサイズの設定 (in m)
 
-```sh
+```
 # 点群密度を変更するため、まずグリッドを設置する
 
 ./sample_diffelev -o <defalut: 0 0> -w <default: 1 1>
 ```
 
 > 入力点群ファイルの指定 `(-p)`
-```sh
+```
 #　指定されるパスから点群ファイルを読込む
 
 ./sample_diffelev -p <path/to/point_cloud_file>
 ```
 
 > 設計データ(LandXML)ファイルの指定
-```sh
+```
 #　指定されるパスから設計データを読込む
 
 ./sample_diffelev -x <path/to/design_data_file>
@@ -104,7 +104,7 @@ Options:
 ---
 
 > 範囲指定に応じた点群の切り出し
-```sh
+```
 # 範囲を指定する多角形の頂点および各頂点の座標を入力する
 
 ./sample_diffelev -c <多角形の頂点の数> <1点目のX座標> <1点目のY座標> <2点目以降...>
@@ -112,14 +112,14 @@ Options:
 <!----------------------------------------------------------------------------->
 
 > 間引き方法の選択 & 出力先の指定
-```sh
+```
 # 各グリッドにおいて点群密度を減らし、代表点のみを抽出する
 
 ./sample_diffelev -g {"maximum" | "minimum" | "median" | "mode"} -t <path/to/output_file>
 ```
 <!----------------------------------------------------------------------------->
 > 設計データから±x m範囲の点群抽出 (in m)
-```sh
+```
 # 設計データから大いに離れる異常値を除外する
 
 ./sample_diffelev -n <default: 0.1>
@@ -135,12 +135,12 @@ Options:
 ./sample_diffelev -p data_sample.txt -x design_data.xml -g "maximum" -n 0.1 -t output.csv
 ```
 
-*+図*
+**+図 SHOW THINNED OFF 地形 POINT CLOUD DATA**
 
 ### 2.3. 標高較差 & ヒートマップ用データの算出
 ---
 > 出力先およびファイルの形式を指定する
-```sh
+```
 # 標高較差 `diffelev.csv`、ヒートマップ用データは `heatmap_data.json` にそれぞれ保存する
 ./sample_diffelev -d diffelev.csv heatmap_data.json 
 ```
@@ -157,7 +157,7 @@ Options:
 # 他のオプションと組み合わせて使用する
 ```
 
-\>> `std_value.json`:
+- `std_value.json`:
 ```json
 {
     "ignore_distance": 0.05, #法肩・法尻から±5cm以内に存在する計測点を除く
@@ -184,7 +184,10 @@ Options:
 ```
 > 結果
 
-\>> `heatmap_data.json`:
+**図to show created file icons**
+**to show heatmap results**
+
+- `heatmap_data.json` (**SCREENSHOT?**):
 
 ```json
 {
@@ -203,7 +206,7 @@ Options:
 >> 棄却点数の割合 > 規格値:
 >>  最大値、最小値、平均値には棄却点を含めて算出された値が記載されます。
 
-\>> `diffelev.csv`:
+- `diffelev.csv` (**SCREENSHOT?**):
 
 | 評価用データ座標Ｘ | 評価用データ座標Ｙ |  設計高  | 現況高  |  標高差  | 規格値比(%) |
 | :----------------: | :----------------: | :------: | :-----: | :------: | :---------: |
@@ -221,13 +224,13 @@ Options:
 ### 2.4. 法角度の算出
 ---
 > 天端か法面かを判定する計算方法を指定する
+- "force-top":天端として計算します
+- "force-slope":法面として計算します
+- "calculation":設計データによる設計面の傾斜角度により、天端か法面かを判定する
 ```sh
- ./sample_diffelev -j <"calculation" | "force-top" | "force-slope">
-
-# "force-top":天端として計算します
-# "force-slope":法面として計算します
-# "calculation":設計データによる設計面の傾斜角度により、天端か法面かを判定する
+ ./sample_diffelev -j {"calculation" | "force-top" | "force-slope"}
 ```
+
 > 出力先とファイルの形式を指定する
 ```
 ./sample_diffelev -a angle.json
@@ -241,6 +244,7 @@ Options:
 
 > 結果（法角度を示す部分）
 
+**TURN INTO SCREENSHOT!**
 
 ```json
 //法面
@@ -312,13 +316,16 @@ Options:
 ```
 
 ### 2.5. STLの出力オプション
+---
+> -xと-lだけではSTLの出力ができないため、まず他に何かのオプションを入力必要
 ```sh
 ./sample_diffelev -p ixs_data_eval.txt -x ixs_design.xml -l output.stl
 ```
-> -xと-lだけではSTLの出力ができないため、まず他に何かのオプションを入力必要
 
+**図 SCREENSHOT OF STL FILE**
 
 ### 2.6. E57 fileの読込み機能を追加
+---
 >　.txt点群ファイルと同じ扱い
 >　
 ```sh
