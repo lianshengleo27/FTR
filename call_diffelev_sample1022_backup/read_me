@@ -1,0 +1,43 @@
+各フォルダの内容について
+
+executable:
+実行可能なバイナリファイルのsample_diffelevと共有ライブラリのlibdiffelev.so,libreade57.so
+が格納されています
+使用する場合は環境変数LD_LIBRARY_PATHにlibdiffelev.so,libreade57.soファイルの格納されたフォルダを指定してください
+
+shared_object:
+共有ライブラリとして使用する場合に必要なファイルが格納されています
+・libdiffelev.so,libreade57.so:共有ライブラリ本体です。executableフォルダにあるものと同じです。
+・各種ヘッダ(*.h):libdiffelev.soに実装されているクラス／関数のインターフェイスが示されています
+		read_e57.hのみ該当関数がlibreade57.soに実装されています。
+
+shared_sample:
+共有ライブラリとして使用する場合のサンプルコードです
+diffelevはshared_sampleフォルダへのシンボリックリンクとなっています
+もしリンクが切れている場合には"ln -s ../shared_object diffelev"などでリンクを再構成してください
+shared_sampleフォルダでmakeコマンドを実行するとサンプルのビルドがされます
+サンプルビルドの結果としてexecutableフォルダのsample_diffelevと同等のものが作成されます
+
+環境設定について
+・環境変数LD_LIBRARY_PATHにlibdiffelev.soファイルの格納されたフォルダを指定するか、
+　あるいは既に設定されているフォルダにlibdiffelev.soをコピーしてください
+・開発環境(libdiffelev.soの作成に使用した環境)は以下になります
+　仮に作成したものですので他環境への以降は可能です
+ Debian 10.10.0 amd64
+ g++ 8.3.0(Debian 8.3.0-6)
+ glibc 2.28-10
+ xerces-c 3.2
+
+規格値の設定について
+・json形式で指定します
+・キーや値などについてはshared_objectのdiff.hのL14 threshold_values構造体や
+　L58 read_json_threshold_values関数の付近のコメントに説明があります
+・-uオプションを使用して実行するとその実行時に使用したパラメータのjsonファイルが出力されます
+　それを参考に設定のjsonを作成して頂いても良いかと思います
+
+疑問点、不明点、変更が必要な点等ありましたらご連絡ください。
+
+
+
+
+
